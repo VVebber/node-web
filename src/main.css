@@ -1,3 +1,26 @@
+:root {
+  --color-primary: #2563EB;
+  --color-secondary: #7C3AED;
+  --color-accent: #06B6D4;
+
+  --color-dark: #1E293B;
+  --color-background: #F8FAFC;
+
+  --color-success: #16A34A;
+  --color-error: #DC2626;
+  --color-warning: #F59E0B;
+
+  /* цвета редактора */
+  --editor-red: #EF4444;
+  --editor-green: #22C55E;
+  --editor-blue: #3B82F6;
+  --editor-yellow: #EAB308;
+}
+
+.flex {
+    display: flex;
+}
+
 .nodeList {
     display: flex;
     flex-wrap: wrap;
@@ -38,21 +61,6 @@ body {
     flex: 1;
 
     border: 1px solid black;
-}
-
-.content-blocks {
-    display: flex;
-    flex-direction: column;
-
-    border: 1px solid gray;
-
-    .content-blocks-title {
-        background-color: gray;
-    }
-
-    .content-blocks-body {
-        height: 100%;
-    }
 }
 }
 

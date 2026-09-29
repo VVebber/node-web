@@ -1,0 +1,26 @@
+.note-editor-toolbar {
+    background: var(--color-dark);
+    color: var(--color-background);
+
+    .note-editor-toolbar__tabs {
+        display: flex;
+
+        gap: 4px;
+        border-bottom: 1px solid #E2E8F0;
+
+        button {
+            padding: 8px 14px;
+            border: none;
+
+            background: transparent;
+            color: var(--color-background);
+
+            cursor: pointer;
+        }
+
+        button.active {
+            background: var(--color-accent);
+
+        }
+    }
+}

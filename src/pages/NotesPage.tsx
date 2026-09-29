@@ -41,7 +41,7 @@ function handleEditorSettingsChange(settings) {
     <>
       <NoteEditorToolbar handleEditorSettingsChange={handleEditorSettingsChange} />
       <main className="note">
-        <div className="notes-title">Название</div>
+        <div className="notes-title">Название {onActivate}</div>
 
         <div className="note-body" onClick={addContentBlocks}>
           {contentBlocks.map((item, index) => {

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import "./NoteBlock.css";
 
 function NoteBlock({
   onClick,
@@ -9,7 +10,7 @@ function NoteBlock({
 }: {
   onClick: () => void;
   props: any;
-  active: boolean;
+  isActive: boolean;
   index: number;
 
   editorSettings: any;
@@ -18,7 +19,36 @@ function NoteBlock({
 
   const [style, setStyle] = useState(props.style);
 
-  function chengPos(event) {}
+  let drag: object | null = null;
+  function handleMouseDown(event) {
+    const block = event.currentTarget.parentElement;
+    const rect = block.getBoundingClientRect();
+
+    drag = {
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  }
+
+  function handleMouseMove(event) {
+    if (!drag) return;
+
+    setStyle((prev) => ({
+      ...prev,
+      left: `${event.clientX - drag?.offsetX}px`,
+      top: `${event.clientY - drag?.offsetY}px`,
+    }));
+  }
+
+  function handleMouseUp() {
+    drag = null;
+
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  }
 
   function onClickAddContent(event) {
     if (event.defaultPrevented) {
@@ -100,10 +130,10 @@ function NoteBlock({
 
         console.log(content, index);
 
-        //        const depth = Number(match[2]);
+        // const depth = Number(match[2]);
 
-        //      const start = selection.anchorOffset;
-        //        const end = selection.focusOffset;
+        // const start = selection.anchorOffset;
+        // const end = selection.focusOffset;
 
         //  updateText(id, depth, node?.textContent, start, end);
 
@@ -111,7 +141,7 @@ function NoteBlock({
     }
   }, [editorSettings]);
 
-  function updateText(id, depth, txt, startIndex, endIndex) {}
+  // function updateText(id, depth, txt, startIndex, endIndex) {}
 
   return (
     <div
@@ -122,9 +152,14 @@ function NoteBlock({
     >
       <div
         className={`content-blocks-title ${!isActive ? "is-hide" : ""}`}
-        onMouseDown={chengPos}
+        onMouseDown={handleMouseDown}
       >
-        &lt; &gt; N
+        <div className="flex">
+          <div>N</div>
+          <div>&lt; &gt;</div>
+        </div>
+    
+        <button>X {isActive}</button>
       </div>
 
       <div className="content-blocks-body" onClick={onClickAddContent}>

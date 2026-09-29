@@ -1,0 +1,50 @@
+.editor-home {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 32px;
+    height: 32px;
+
+    padding: 1px;
+  }
+
+  .text-color {
+    display: flex;
+    flex-direction: column;
+
+    .text-color__indicator{
+    width: 70%;
+    height: 20%;
+    background-color: red;
+    }
+  }
+
+  .icon svg {
+    flex: 1;
+
+    width: 20px;
+    height: 20px;
+  }
+
+  .editor-home__lists {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 4px;
+    max-width: 230px;
+  }
+
+  .editor-home__formatting{
+      display: flex;
+    flex-wrap: wrap;
+
+    gap: 4px;
+    max-width: 100px;
+  }
+}
