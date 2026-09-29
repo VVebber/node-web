@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import NoteEditorToolbar from "../components/NoteEditorToolbar";
 import { useState } from "react";
 import NoteBlock from "../components/NoteBlock";
+import { getRelativeMousePosition } from "../utils/editorUtils";
 
 function NotesPage() {
   function addContentBlocks(event) {
@@ -10,13 +11,15 @@ function NotesPage() {
       return;
     }
 
+    const {x, y } =getRelativeMousePosition(event);
+    
     setContentBlocks([
       ...contentBlocks,
       {
         style: {
           position: "absolute",
-          top: `${event.clientY}px`,
-          left: `${event.clientX}px`,
+          top: `${y}px`,
+          left: `${x}px`,
           height: "200px",
           width: "400px",
         },
@@ -32,16 +35,21 @@ function NotesPage() {
   const [onActivate, setOnActivate] = useState<null | number>(null);
   const [contentBlocks, setContentBlocks] = useState([]);
 
-const [editorSettings, setEditorSettings] = useState({});
-function handleEditorSettingsChange(settings) {
-  setEditorSettings(settings);
-}
+  const [editorSettings, setEditorSettings] = useState({});
+  function handleEditorSettingsChange(settings) {
+    setEditorSettings(settings);
+  }
 
   return (
     <>
-      <NoteEditorToolbar handleEditorSettingsChange={handleEditorSettingsChange} />
+      <NoteEditorToolbar
+        handleEditorSettingsChange={handleEditorSettingsChange}
+      />
       <main className="note">
-        <div className="notes-title">Название {onActivate}</div>
+        <div className="notes-title">
+          <div className="notes-title__name">Название {onActivate}</div>
+          <div className="notes-title__date">16 апреля 2026г. 15:14</div>
+        </div>
 
         <div className="note-body" onClick={addContentBlocks}>
           {contentBlocks.map((item, index) => {

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { getRelativeMousePosition } from "../utils/editorUtils";
 
 export interface Content {
   id: string;
@@ -56,6 +57,8 @@ export class Contents {
     };
   }
 }
+
+//Vf
 
 //События
 

@@ -1,20 +1,20 @@
 :root {
-  --color-primary: #2563EB;
-  --color-secondary: #7C3AED;
-  --color-accent: #06B6D4;
+    --color-primary: #2563EB;
+    --color-secondary: #7C3AED;
+    --color-accent: #06B6D4;
 
-  --color-dark: #1E293B;
-  --color-background: #F8FAFC;
+    --color-dark: #1E293B;
+    --color-background: #F8FAFC;
 
-  --color-success: #16A34A;
-  --color-error: #DC2626;
-  --color-warning: #F59E0B;
+    --color-success: #16A34A;
+    --color-error: #DC2626;
+    --color-warning: #F59E0B;
 
-  /* цвета редактора */
-  --editor-red: #EF4444;
-  --editor-green: #22C55E;
-  --editor-blue: #3B82F6;
-  --editor-yellow: #EAB308;
+    /* цвета редактора */
+    --editor-red: #EF4444;
+    --editor-green: #22C55E;
+    --editor-blue: #3B82F6;
+    --editor-yellow: #EAB308;
 }
 
 .flex {
@@ -52,16 +52,35 @@ body {
     flex: 1;
 
     display: flex;
+    position: relative;
 
-    .notes-title{
+    .notes-title {
         position: absolute;
+        left: 0px;
+        top: 0px;
+
+        padding-top: 10px;
+
+        .notes-title__name {
+            text-align: center;
+            border-bottom: 1px solid black;
+
+            font-size: 21px;
+            width: 200px;
+        }
+
+        .notes-title__date {
+            color: gray;
+            font-size: 13px;
+            padding-top: 10px;
+        }
     }
 
     .note-body {
-    flex: 1;
+        flex: 1;
 
-    border: 1px solid black;
-}
+        border: 1px solid black;
+    }
 }
 
 .is-hide {

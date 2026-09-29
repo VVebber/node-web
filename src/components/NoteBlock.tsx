@@ -21,37 +21,6 @@ function NoteBlock({
 
   const contents = useRef(new Contents()).current;
 
-  let drag: object | null = null;
-  function handleMouseDown(event) {
-    const block = event.currentTarget.parentElement;
-    const rect = block.getBoundingClientRect();
-
-    drag = {
-      offsetX: event.clientX - rect.left,
-      offsetY: event.clientY - rect.top,
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  }
-
-  function handleMouseMove(event) {
-    if (!drag) return;
-
-    setStyle((prev) => ({
-      ...prev,
-      left: `${event.clientX - drag?.offsetX}px`,
-      top: `${event.clientY - drag?.offsetY}px`,
-    }));
-  }
-
-  function handleMouseUp() {
-    drag = null;
-
-    document.removeEventListener("mousemove", handleMouseMove);
-    document.removeEventListener("mouseup", handleMouseUp);
-  }
-
   function onClickAddContent(event) {
     if (event.defaultPrevented) {
       return;
@@ -66,6 +35,52 @@ function NoteBlock({
   function onClickContent(event) {
     event.preventDefault();
   }
+  // Движение окна
+  const drag = useRef<{
+    mouseX: number;
+    mouseY: number;
+    blockX: number;
+    blockY: number;
+  } | null>(null);
+
+  function handleMouseDown(event) {
+    const block = event.currentTarget.parentElement;
+
+    if (!block) return;
+
+    drag.current = {
+      mouseX: event.clientX,
+      mouseY: event.clientY,
+      blockX: block.offsetLeft,
+      blockY: block.offsetTop,
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  }
+
+  function handleMouseMove(event) {
+    if (!drag.current) return;
+
+    const { mouseX, mouseY, blockX, blockY } = drag.current;
+
+    const dx = event.clientX - mouseX;
+    const dy = event.clientY - mouseY;
+
+    setStyle((prev) => ({
+      ...prev,
+      left: `${blockX + dx}px`,
+      top: `${blockY + dy}px`,
+    }));
+  }
+
+  function handleMouseUp() {
+    drag.current = null;
+
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  }
+  //
 
   useEffect(() => {
     console.log(editorSettings, "стиль");
