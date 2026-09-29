@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./NoteBlock.css";
+import { Contents } from "./NoteBlockUtils";
 
 function NoteBlock({
   onClick,
@@ -15,9 +16,10 @@ function NoteBlock({
 
   editorSettings: any;
 }) {
-  const [content, setContent] = useState([]);
-
+  const [, update] = useState(0);
   const [style, setStyle] = useState(props.style);
+
+  const contents = useRef(new Contents()).current;
 
   let drag: object | null = null;
   function handleMouseDown(event) {
@@ -55,28 +57,14 @@ function NoteBlock({
       return;
     }
 
-    setContent([
-      ...content,
-      { id: `${content.length}_1`, type: "text", content: "wadwas" },
-    ]);
+    contents.addContent();
+
+    update((n) => n + 1);
+    console.log("leng", contents.contents().length);
   }
 
   function onClickContent(event) {
     event.preventDefault();
-  }
-
-  function typeContent(item) {
-    switch (item.type) {
-      case "text":
-        if (Array.isArray(item.content))
-          return item.content.map((item) => typeContent(item));
-
-        return (
-          <span data-content-id={item.id} style={item?.style}>
-            {item.content}
-          </span>
-        );
-    }
   }
 
   useEffect(() => {
@@ -158,15 +146,15 @@ function NoteBlock({
           <div>N</div>
           <div>&lt; &gt;</div>
         </div>
-    
+
         <button>X {isActive}</button>
       </div>
 
       <div className="content-blocks-body" onClick={onClickAddContent}>
-        {content.map((item, index) => {
+        {contents.contents().map((item, index) => {
           return (
             <div key={index} onClick={onClickContent}>
-              {typeContent(item)}
+              {contents.render(item, () => update((n) => n + 1))}
             </div>
           );
         })}
