@@ -26,6 +26,12 @@
   .content-blocks-body {
     height: 100%;
     padding: 12px;
+
+
+    p{
+      width: 100%;
+      word-wrap: break-word;
+    }
   }
 
   .is-hide {

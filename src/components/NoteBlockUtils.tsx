@@ -3,7 +3,8 @@ import { useState } from "react";
 export interface Content {
   id: string;
   type: string;
-  content?: string | Content;
+  content?: string | Content[];
+  style?: object;
 }
 
 export class Contents {
@@ -21,11 +22,11 @@ export class Contents {
     return this.#contents;
   }
 
-  render(item: Content, update: ()=>void) {
+  render(item: Content, update: () => void): React.ReactNode {
     switch (item.type) {
       case "text":
         if (Array.isArray(item.content))
-          return item.content.map((item) => this.render(item));
+          return item.content.map((item) => this.render(item, update));
 
         return (
           <span
@@ -34,9 +35,9 @@ export class Contents {
             tabIndex={0}
             onKeyDown={(event) => {
               console.log(event.key);
-              item.content += event.key
-              console.log(item.content)
-              update()
+              item.content += event.key;
+
+              update();
             }}
           >
             {item.content}
@@ -44,12 +45,21 @@ export class Contents {
         );
     }
   }
+
+  updateStyle(index: number, style: object) {
+    const type = style.style;
+    const value = style.value;
+
+    this.#contents[index].style = {
+      ...this.#contents[index].style,
+      [type]: value,
+    };
+  }
 }
 
-export function hanleInput(event) {
-  console.log(event);
-}
+//События
 
+// Методы общие
 export function getNodePosition(id: string) {
   const match = id.match(/^(\d+)_(\d+)$/);
 

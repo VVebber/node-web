@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./NoteBlock.css";
-import { Contents } from "./NoteBlockUtils";
+import { Contents, getNodePosition } from "./NoteBlockUtils";
 
 function NoteBlock({
   onClick,
@@ -72,11 +72,6 @@ function NoteBlock({
 
     if (!isActive) return;
 
-    const type = editorSettings.style;
-    const value = editorSettings.value;
-
-    console.log("2", type, value);
-
     switch (editorSettings.type) {
       case "text":
         const selection: Selection | null = window.getSelection();
@@ -96,40 +91,12 @@ function NoteBlock({
 
         if (id === undefined) return;
 
-        const match = id.match(/^(\d+)_(\d+)$/);
-
-        if (!match) return;
-
-        const index = Number(match[1]);
-
-        setContent(
-          content.map((item) =>
-            item.id === id
-              ? {
-                  ...item,
-                  style: {
-                    ...item.style,
-                    [type]: value,
-                  },
-                }
-              : item,
-          ),
-        );
-
-        console.log(content, index);
-
-        // const depth = Number(match[2]);
-
-        // const start = selection.anchorOffset;
-        // const end = selection.focusOffset;
-
-        //  updateText(id, depth, node?.textContent, start, end);
+        const { index: number } = getNodePosition(id);
+        contents.updateStyle(index, editorSettings);
 
         break;
     }
   }, [editorSettings]);
-
-  // function updateText(id, depth, txt, startIndex, endIndex) {}
 
   return (
     <div
@@ -153,9 +120,9 @@ function NoteBlock({
       <div className="content-blocks-body" onClick={onClickAddContent}>
         {contents.contents().map((item, index) => {
           return (
-            <div key={index} onClick={onClickContent}>
+            <p key={index} onClick={onClickContent}>
               {contents.render(item, () => update((n) => n + 1))}
-            </div>
+            </p>
           );
         })}
       </div>
