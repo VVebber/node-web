@@ -1,39 +1,94 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import NotebookText from "../components/icons/home/notebook-text";
+import { createNode, fetchNode, type NoteBlock } from "../api/note";
 
 function Home() {
-  const [mas, setMas] = useState([]);
+  const [mas, setMas] = useState<NoteBlock[]>([]);  
 
-  function addMas(event, type: string){
-    if(event.defaultPrevented){
-      console.log('daw')
-      return
+  useEffect(()=>{
+      fetchNode().then(res=> setMas([...res]));
+  }, [])
+
+  async function addMas(event) {
+    if (event.defaultPrevented) {
+      return;
     }
-    setMas([...mas, { type: type }])
+
+    const res = await createNode({ title: "ddd", description: "3dd" });
+
+    const note: NoteBlock = {
+      id: Number(res.id),
+      title: "Заметка",
+      description: "",
+    };
+
+    setMas([...mas, note]);
   }
 
+  function createNodeHTML(item: NoteBlock, index: number) {
     return (
-      <>
-        <header>Заметки</header>
-        <main>
-          <button onClick={(e) => addMas(e, "Заметки")}>1+</button>
-          <button onClick={(e) => addMas(e, "Папка")}>2+</button>
-          {/* <button onClick={addMas}>+</button> */}
+      <Link to="notesPage" className="nodeItem" key={index}>
+        <div className="nodeHeader">
+          <div className="nodeTitle">
+            <span className="nodeType">{item.type}</span>
 
-          <div className="nodeList">
-            {mas.map((item) => (
-              <Link to='notesPage' className="nodeItem">
-                <div>{item.type}:</div>
-                <div>Описание: </div>
-              </Link>
-            ))}
+            <input
+              type="text"
+              onClick={(e) => e.preventDefault()}
+              placeholder="Название заметки..."
+              value={item.title}
+            />
           </div>
-        </main>
 
-        <footer></footer>
-      </>
+          <button
+            className="deleteButton"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              // здесь удаление
+              console.log("Удалить:", item);
+            }}
+            title="Удалить"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="nodeDescription">
+          <span>Описание</span>
+
+          <textarea
+            onClick={(e) => e.preventDefault()}
+            placeholder="Добавьте описание..."
+            value={item.description}
+          />
+        </div>
+      </Link>
     );
-}
+  }
 
+  return (
+    <>
+      <header>Заметки</header>
+      <main>
+        <div>
+          <button onClick={(e) => addMas(e, "Заметки")}>
+            <NotebookText />
+          </button>
+          {/* <button onClick={(e) => addMas(e, "Папка")}>2+</button> */}
+          {/* <button onClick={addMas}>+</button> */}
+        </div>
+
+        <div className="nodeList">
+          {mas.map((item, index) => createNodeHTML(item, index))}
+        </div>
+      </main>
+
+      <footer></footer>
+    </>
+  );
+}
 
 export default Home;
