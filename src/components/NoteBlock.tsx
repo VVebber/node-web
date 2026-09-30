@@ -19,7 +19,7 @@ function NoteBlock({
   const [, update] = useState(0);
   const [style, setStyle] = useState(props.style);
 
-  const contents = useRef(new Contents()).current;
+  const contents = useRef(new Contents(() => update((n) => n + 1))).current;
 
   function onClickAddContent(event) {
     if (event.defaultPrevented) {
@@ -91,7 +91,7 @@ function NoteBlock({
       case "text":
         const selection: Selection | null = window.getSelection();
 
-        if (selection === null) return;
+        if (selection === null || selection.toString() === null) return;
 
         const node: Node | null = selection.anchorNode;
 
@@ -106,12 +106,38 @@ function NoteBlock({
 
         if (id === undefined) return;
 
-        const { index: number } = getNodePosition(id);
-        contents.updateStyle(index, editorSettings);
+        const container = element.closest("p");
+
+        if (!(container instanceof HTMLElement)) return;
+
+        const { anchor, focus } = getSelectionPosition(selection, container);
+
+        contents.updateStyle(id, editorSettings, {
+          anchor: Math.min(anchor, focus),
+          focus: Math.max(anchor, focus),
+        });
 
         break;
     }
   }, [editorSettings]);
+
+  function getSelectionPosition(
+    selection: Selection,
+    container: HTMLElement,
+  ): { anchor: number; focus: number } {
+    const anchorRange = document.createRange();
+    anchorRange.selectNodeContents(container);
+    anchorRange.setEnd(selection.anchorNode!, selection.anchorOffset);
+
+    const focusRange = document.createRange();
+    focusRange.selectNodeContents(container);
+    focusRange.setEnd(selection.focusNode!, selection.focusOffset);
+
+    return {
+      anchor: anchorRange.toString().length,
+      focus: focusRange.toString().length,
+    };
+  }
 
   return (
     <div
@@ -136,7 +162,7 @@ function NoteBlock({
         {contents.contents().map((item, index) => {
           return (
             <p key={index} onClick={onClickContent}>
-              {contents.render(item, () => update((n) => n + 1))}
+              {contents.render(item, index)}
             </p>
           );
         })}

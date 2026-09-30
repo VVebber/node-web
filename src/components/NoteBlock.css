@@ -28,14 +28,21 @@
     padding: 12px;
 
 
-    p{
+    p {
       width: 100%;
       word-wrap: break-word;
+      font-size: 30px;
+
+      span.active {       
+        color: red
+
+      }
     }
   }
 
   .is-hide {
     display: none;
-}
+  }
+
 
 }

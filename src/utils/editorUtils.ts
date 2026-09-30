@@ -10,3 +10,11 @@ export function getRelativeMousePosition(event: any, target = null) {
   return { x, y };
 }
 
+export function getCaretPosition(event){
+
+    const range = document.caretPositionFromPoint(event.clientX, event.clientY);
+
+    if (!range) return -1;
+      return range.offset
+
+}
