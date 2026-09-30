@@ -19,18 +19,44 @@ function EditorHome({
           <button className="icon">A^</button>
           <button className="icon">A_</button>
           <button className="icon">Aa</button>
-
         </div>
 
-        <button className="icon">Ж</button>
-        <button className="icon">К</button>
+        <button
+          className="icon"
+          onClick={() => handle("text", "fontWeight", "bold")}
+        >
+          Ж
+        </button>
 
-        <button className="icon">Ч</button>
-        <button className="icon">Т</button>
-        <button className="icon">A<sub>2</sub></button>
-        <button className="icon">A<sup>2</sup></button>
+        <button
+          className="icon"
+          onClick={() => handle("text", "fontStyle", "italic")}
+        >
+          К
+        </button>
 
-              <button className="icon">F</button>
+        <button
+          className="icon"
+          onClick={() => handle("text", "textDecoration", "underline")}
+        >
+          Ч
+        </button>
+
+        <button
+          className="icon"
+          onClick={() => handle("text", "textDecoration", "line-through")}
+        >
+          Т
+        </button>
+
+        <button className="icon">
+          A<sub>2</sub>
+        </button>
+        <button className="icon">
+          A<sup>2</sup>
+        </button>
+
+        <button className="icon">F</button>
 
         <button
           className="icon text-color"
@@ -42,7 +68,6 @@ function EditorHome({
             style={{ background: "green" }}
           ></div>
         </button>
-      
       </div>
 
       <div className="editor-home__lists editor-home__separator">
