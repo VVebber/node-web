@@ -1,0 +1,101 @@
+.content-blocks {
+  display: flex;
+  flex-direction: column;
+
+  background: var(--color-background);
+  color: var(--color-dark);
+
+  border: 1px solid var(--color-dark);
+  border-radius: 8px;
+
+  overflow: hidden;
+
+  resize: both;
+
+  .content-blocks-title {
+    padding: 6px 10px;
+
+    color: white;
+    background: var(--color-dark);
+
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+
+    cursor: pointer;
+  }
+
+  .content-blocks-body {
+    height: 100%;
+    padding: 12px;
+
+    display: flex;
+    flex-direction: column;
+
+    p {
+      margin: 0 0 10px;
+      width: 100%;
+      font-size: 36px;
+
+      overflow-wrap: break-word;
+
+      span {
+        overflow-wrap: break-word;
+      }
+
+      span:last-child {
+        flex: 1;
+      }
+    }
+
+    p:last-child {
+      flex: 1;
+    }
+  }
+
+  .is-hide {
+    display: none;
+  }
+
+
+  .note-resize-top,
+  .note-resize-right,
+  .note-resize-bottom,
+  .note-resize-left {
+    position: absolute;
+    background: red;
+  }
+
+  /* верх */
+  .note-resize-top {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+  }
+
+  /* право */
+  .note-resize-right {
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+  }
+
+  /* низ */
+  .note-resize-bottom {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+  }
+
+  /* лево */
+  .note-resize-left {
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 100%;
+  }
+
+}

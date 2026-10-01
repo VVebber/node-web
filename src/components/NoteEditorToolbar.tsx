@@ -1,18 +1,21 @@
 import { useState } from "react";
-import "./NoteEditorToolbar.css";
+import "../styles/NoteEditorToolbar.css";
 import EditorHome from "./editor/EditorHome";
+import type { ContentStyle } from "../types/ContentStyle";
 
-function NoteEditorToolbar({ handleEditorSettingsChange }) {
+function NoteEditorToolbar({ handleEditorSettingsChange }: {
+  handleEditorSettingsChange: (contentStyle: ContentStyle)=> void
+}) {
   const [activeBtn, setActiveBtn] = useState(1);
 
   const btns = ["Файл", "Главная", "Вставка", "Рисование", "Защита", "Вид"];
 
-  function handle(type, style, value) {
+  function handle(type: string, style: string, value: string) {
     handleEditorSettingsChange({
       type,
       style,
       value,
-    });
+    } as ContentStyle);
   }
 
   function renderTabs() {

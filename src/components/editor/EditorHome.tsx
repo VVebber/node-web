@@ -24,6 +24,7 @@ function EditorHome({
         <button
           className="icon"
           onClick={() => handle("text", "fontWeight", "bold")}
+          onMouseDown={(e) => e.preventDefault()}
         >
           Ж
         </button>
@@ -31,6 +32,7 @@ function EditorHome({
         <button
           className="icon"
           onClick={() => handle("text", "fontStyle", "italic")}
+          onMouseDown={(e) => e.preventDefault()}
         >
           К
         </button>
@@ -38,6 +40,7 @@ function EditorHome({
         <button
           className="icon"
           onClick={() => handle("text", "textDecoration", "underline")}
+          onMouseDown={(e) => e.preventDefault()}
         >
           Ч
         </button>
@@ -45,6 +48,7 @@ function EditorHome({
         <button
           className="icon"
           onClick={() => handle("text", "textDecoration", "line-through")}
+          onMouseDown={(e) => e.preventDefault()}
         >
           Т
         </button>
@@ -61,6 +65,7 @@ function EditorHome({
         <button
           className="icon text-color"
           onClick={() => handle("text", "color", "green")}
+          onMouseDown={(e) => e.preventDefault()}
         >
           <div>A</div>
           <div

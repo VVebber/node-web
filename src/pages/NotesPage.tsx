@@ -1,8 +1,9 @@
 import { Link } from "react-router";
 import NoteEditorToolbar from "../components/NoteEditorToolbar";
 import { useState } from "react";
-import NoteBlock from "../components/NoteBlock";
+import NoteBlock from "../components/note/NoteBlock";
 import { getRelativeMousePosition } from "../utils/editorUtils";
+import type { ContentStyle } from "../types/ContentStyle";
 
 function NotesPage() {
   function addContentBlocks(event) {
@@ -36,8 +37,54 @@ function NotesPage() {
   const [contentBlocks, setContentBlocks] = useState([]);
 
   const [editorSettings, setEditorSettings] = useState({});
-  function handleEditorSettingsChange(settings) {
-    setEditorSettings(settings);
+  
+  function handleEditorSettingsChange(contentStyle: ContentStyle) {
+    const selection = window.getSelection();
+    const anchorNode = selection?.anchorNode;
+    const focusNode = selection?.focusNode;
+
+    if (
+      selection === null ||
+      selection.isCollapsed ||
+      anchorNode == null ||
+      focusNode == null
+    ) {
+      setEditorSettings({ ...contentStyle, selection: undefined });
+      return;
+    }
+
+    const anchorElement =
+      anchorNode instanceof Element ? anchorNode : anchorNode.parentElement;
+    const element = anchorElement?.closest<HTMLElement>("[data-content-id]");
+    const container = element?.closest<HTMLElement>("p");
+
+    if (!element || !container) {
+      setEditorSettings({ ...contentStyle, selection: undefined });
+      return;
+    }
+
+    const anchorRange = document.createRange();
+    anchorRange.selectNodeContents(container);
+    anchorRange.setEnd(anchorNode, selection.anchorOffset);
+
+    const focusRange = document.createRange();
+    focusRange.selectNodeContents(container);
+    focusRange.setEnd(focusNode, selection.focusOffset);
+
+    const contentId = element.dataset.contentId;
+    if (!contentId) {
+      setEditorSettings({ ...contentStyle, selection: undefined });
+      return;
+    }
+
+    setEditorSettings({
+      ...contentStyle,
+      selection: {
+        contentId,
+        anchor: anchorRange.toString().length,
+        focus: focusRange.toString().length,
+      },
+    });
   }
 
   return (
