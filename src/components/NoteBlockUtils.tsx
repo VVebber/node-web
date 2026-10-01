@@ -5,11 +5,15 @@ import {
 } from "../utils/editorUtils";
 
 export interface Content {
-  id: string;
+  index: string; //index_depth_indexInContent
   text?: string;
   type: string;
   content?: string | Content[];
   style?: object;
+  select?: {
+    anchor: number;
+    focus: number;
+  };
 }
 
 export class Contents {
@@ -23,7 +27,7 @@ export class Contents {
 
   addContent() {
     this.#contents.push({
-      id: `${this.#contents.length}_1`,
+      index: `${this.#contents.length}_0`,
       text: `testText_${this.#contents.length}`,
       type: "text",
       content: `testText_${this.#contents.length}`,
@@ -67,7 +71,7 @@ export class Contents {
 
         return key === -1 ? (
           <span
-            data-content-id={item.id}
+            data-content-id={item.index}
             style={item?.style}
             tabIndex={0}
             onClick={(e) => {
@@ -78,7 +82,7 @@ export class Contents {
           </span>
         ) : (
           <span
-            data-content-id={item.id}
+            data-content-id={item.index}
             style={item?.style}
             key={key}
             tabIndex={0}
@@ -95,38 +99,76 @@ export class Contents {
   ddwwa(
     index: number,
     depth: number,
+    indexContent: number,
     content: Content,
     selection: { anchor: number; focus: number },
   ) {
-    if (selection.anchor === 0 && selection.focus === content.text?.length) {
-      content.content = content.text;
-      return content;
-    } else {
-      const string: string = content.content;
-      const beforeSelection = {
-        id: `${index}_${index + 1}`,
-        type: "text",
-        content: string.slice(0, selection.anchor),
-      };
+    const {
+      index: indexCurrent,
+      depth: depthCurrent,
+      indexContent: indexContentCurrent,
+    } = getNodePosition(content.index);
 
-      const selectedText = {
-        id: `${index}_${index + 1}`,
-        type: "text",
-        content: string.slice(selection.anchor, selection.focus),
-      };
+    console.log(`=========== отладка ${content.index}`);
+    console.log("index", index);
+    console.log("depth", depth);
+    console.log("indexContent", indexContent);
+    console.log("content", content);
+    console.log("selection", selection);
+    console.log("indexCurrent", indexCurrent);
+    console.log("depthCurrent", depthCurrent);
+    console.log("indexContentCurrent", indexContentCurrent);
+    console.log("===========");
 
-      const afterSelection = {
-        id: `${index}_${index + 1}`,
-        type: "text",
-        content: string.slice(selection.focus, content.text?.length),
-      };
+    if (depth === depthCurrent && indexContent === indexContentCurrent) {
+      if (selection.anchor === 0 && selection.focus === content.text?.length) {
+        content.content = content.text;
+        return content;
+      } else {
+        const string: string = content.content;
+        const beforeSelection = {
+          index: `${index}_${depthCurrent + 1}_0`,
+          type: "text",
+          text: string.slice(0, selection.anchor),
+          content: string.slice(0, selection.anchor),
+        };
 
-      content.content = [beforeSelection, selectedText, afterSelection];
+        const selectedText = {
+          index: `${index}_${depthCurrent + 1}_1`,
+          type: "text",
+          text: string.slice(selection.anchor, selection.focus),
+          content: string.slice(selection.anchor, selection.focus),
+        };
 
-      console.log(content)
+        const afterSelection = {
+          index: `${index}_${depthCurrent + 1}_2`,
+          type: "text",
+          text: string.slice(selection.focus, content.text?.length),
+          content: string.slice(selection.focus, content.text?.length),
+        };
 
-      return selectedText;
+        content.content = [beforeSelection, selectedText, afterSelection];
+
+        return selectedText;
+      }
+    } else if (depth !== 0 && Array.isArray(content.content)) {
+      let offset = 0;
+
+      for (const con of content.content) {
+        const result = this.ddwwa(index, depth, indexContent, con, {
+          anchor: selection.anchor - offset,
+          focus: selection.focus - offset,
+        });
+
+        if (result !== null) {
+          return result;
+        }
+
+        offset += con.text?.length ?? 0;
+      }
     }
+
+    return null;
   }
 
   updateStyle(
@@ -134,15 +176,26 @@ export class Contents {
     style: object,
     selection: { anchor: number; focus: number },
   ) {
-      
     const type = style.style;
     const value = style.value;
 
-    const { index, depth } = getNodePosition(id);
+    const { index, depth, indexContent } = getNodePosition(id);
 
-    const content = this.ddwwa(index, depth, this.#contents[index], selection);
+    console.log(index, ":", depth, ":", indexContent);
 
-    
+    const s = this.#contents[index];
+    console.log(s, "after");
+
+    const content = this.ddwwa(
+      index,
+      depth,
+      indexContent,
+      this.#contents[index],
+      selection,
+    );
+
+    console.log(this.#contents[index], "befor");
+
     content.style = {
       ...content.style,
       [type]: value,
@@ -158,12 +211,13 @@ export class Contents {
 
 // Методы общие
 export function getNodePosition(id: string) {
-  const match = id.match(/^(\d+)_(\d+)$/);
-
-  if (!match) return;
-
+  const match = id.match(/^(\d+)_(\d+)(?:_(\d+))?$/);
+  if (!match) {
+    return;
+  }
   const index = Number(match[1]);
   const depth = Number(match[2]);
+  const indexContent = match[3] ? Number(match[3]) : undefined;
 
-  return { index, depth };
+  return { index, depth, indexContent };
 }

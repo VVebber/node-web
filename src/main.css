@@ -21,11 +21,22 @@
     display: flex;
 }
 
-.nodeList {
-    display: flex;
-    flex-wrap: wrap;
+.workspace {
+    position: relative;
 
-    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .nodeList {
+        width: 100%;
+
+        display: grid;
+        grid-template-columns: repeat(auto-fit, 300px);
+        justify-content: center;
+
+        gap: 10px;
+    }
 }
 
 .nodeItem {

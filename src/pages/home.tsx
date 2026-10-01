@@ -65,13 +65,12 @@ function Home() {
               e.preventDefault();
               if (item.id !== undefined) {
                 deleteNode(item.id);
-              
-                setMas(prev=> 
-                  prev.filter(node => {
-                    if(node.id !== item.id)
-                      return node; 
-                  })
-                )
+
+                setMas((prev) =>
+                  prev.filter((node) => {
+                    if (node.id !== item.id) return node;
+                  }),
+                );
               }
             }}
             title="Удалить"
@@ -107,16 +106,17 @@ function Home() {
 
   return (
     <>
-      <header>Заметки</header>
-      <main>
-        <div>
-          <button onClick={(e) => addMas(e, "Заметки")}>
+      <header>
+        <span>Заметки</span>
+        <input />
+        <div className="actionBar">
+          <button onClick={(e) => addMas(e)}>
             <NotebookText />
           </button>
           {/* <button onClick={(e) => addMas(e, "Папка")}>2+</button> */}
-          {/* <button onClick={addMas}>+</button> */}
         </div>
-
+      </header>
+      <main className="workspace">
         <div className="nodeList">
           {mas.map((item, index) => createNodeHTML(item, index))}
         </div>

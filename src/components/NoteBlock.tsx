@@ -100,6 +100,7 @@ function NoteBlock({
         const element: Element | null | undefined =
           node.parentElement?.closest("[data-content-id]");
 
+        console.log(element, 333);
         if (!(element instanceof HTMLElement)) return;
 
         const id = element.dataset.contentId;
@@ -107,7 +108,6 @@ function NoteBlock({
         if (id === undefined) return;
 
         const container = element.closest("p");
-
         if (!(container instanceof HTMLElement)) return;
 
         const { anchor, focus } = getSelectionPosition(selection, container);
