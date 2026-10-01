@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import NotebookText from "../components/icons/home/notebook-text";
-import { createNode, fetchNode, type NoteBlock } from "../api/note";
+import {
+  createNode,
+  deleteNode,
+  fetchNode,
+  updateNode,
+  type NoteBlock,
+} from "../api/note";
 
 function Home() {
-  const [mas, setMas] = useState<NoteBlock[]>([]);  
+  const [mas, setMas] = useState<NoteBlock[]>([]);
 
-  useEffect(()=>{
-      fetchNode().then(res=> setMas([...res]));
-  }, [])
+  useEffect(() => {
+    fetchNode().then((res) => setMas([...res]));
+  }, []);
 
   async function addMas(event) {
     if (event.defaultPrevented) {
@@ -36,6 +42,18 @@ function Home() {
             <input
               type="text"
               onClick={(e) => e.preventDefault()}
+              onChange={(e) => {
+                const value = e.target.value;
+
+                setMas((prev) =>
+                  prev.map((note) => {
+                    return note.id === item.id
+                      ? { ...note, title: value }
+                      : note;
+                  }),
+                );
+              }}
+              onBlur={() => updateNode(item)}
               placeholder="Название заметки..."
               value={item.title}
             />
@@ -45,10 +63,16 @@ function Home() {
             className="deleteButton"
             onClick={(e) => {
               e.preventDefault();
-              e.stopPropagation();
-
-              // здесь удаление
-              console.log("Удалить:", item);
+              if (item.id !== undefined) {
+                deleteNode(item.id);
+              
+                setMas(prev=> 
+                  prev.filter(node => {
+                    if(node.id !== item.id)
+                      return node; 
+                  })
+                )
+              }
             }}
             title="Удалить"
           >
@@ -61,6 +85,18 @@ function Home() {
 
           <textarea
             onClick={(e) => e.preventDefault()}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              setMas((prev) =>
+                prev.map((note) => {
+                  return note.id === item.id
+                    ? { ...note, description: value }
+                    : note;
+                }),
+              );
+            }}
+            onBlur={(e) => console.log(e.target.value, "333333")}
             placeholder="Добавьте описание..."
             value={item.description}
           />
